@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Liberator.Lazuli.Minio", "Liberator.Lazuli.Minio\Liberator.Lazuli.Minio.csproj", "{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {36AA8E6E-EFA0-407A-AC9E-B975FA85A23B}
+	EndGlobalSection
+EndGlobal

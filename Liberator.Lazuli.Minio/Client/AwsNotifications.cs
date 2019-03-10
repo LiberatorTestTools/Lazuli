@@ -1,4 +1,5 @@
-﻿using Minio;
+﻿using Liberator.Lazuli.Minio.Exceptions;
+using Minio;
 using Minio.DataModel;
 using System;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace Liberator.Lazuli.Minio.Client
     /// <summary>
     /// Base class for adding notifications to AWS
     /// </summary>
-    public class AwsNotifications
+    public static class AwsNotifications
     {
         /// <summary>
         /// Gets notifications from a bucket
@@ -16,7 +17,7 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task Get(MinioClient minio, string bucketName)
+        public async static Task GetAwsNotifications(this MinioClient minio, string bucketName)
         {
             try
             {
@@ -24,7 +25,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("Error parsing bucket notifications - make sure that you are running this call against AWS end point");
+                throw new LazuliBucketException("Error parsing bucket notifications", e);
             }
         }
 
@@ -34,7 +35,7 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task Set(MinioClient minio, string bucketName)
+        public async static Task SetAwsNotifications(MinioClient minio, string bucketName)
         {
             try
             {
@@ -67,7 +68,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Could not set the AWS Notifications for the bucket.", e);
             }
         }
 
@@ -77,7 +78,7 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task RemoveAll(MinioClient minio, string bucketName)
+        public async static Task RemoveAllAwsNotifications(MinioClient minio, string bucketName)
         {
             try
             {
@@ -85,7 +86,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Could not remove the AWS Notifications for the bucket.", e);
             }
 
         }

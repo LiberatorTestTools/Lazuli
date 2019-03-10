@@ -79,7 +79,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unable to remove the named bucket.", e);
+                throw new LazuliBucketException("Unable to remove the named bucket.", e);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to list objects from the name bucket.", e);
             }
 
         }
@@ -130,7 +130,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception: {0}", e);
+                throw new LazuliBucketException("Unable to list the incomplete uploads to the named bucket.", e);
             }
         }
     }

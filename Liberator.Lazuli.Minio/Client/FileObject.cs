@@ -1,4 +1,5 @@
-﻿using Minio;
+﻿using Liberator.Lazuli.Minio.Exceptions;
+using Minio;
 using Minio.DataModel;
 using System;
 using System.IO;
@@ -29,7 +30,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to download the object.", e);
             }
         }
 
@@ -49,7 +50,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to upload the file.", e);
             }
         }
     }

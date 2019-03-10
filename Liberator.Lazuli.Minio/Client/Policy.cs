@@ -1,4 +1,5 @@
-﻿using Minio;
+﻿using Liberator.Lazuli.Minio.Exceptions;
+using Minio;
 using Minio.DataModel;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to get the policy for the bucket.", e);
             }
         }
 
@@ -43,7 +44,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to set the policy for the bucket.", e);
             }
         }
 
@@ -74,7 +75,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("Exception ", e.Message);
+                throw new LazuliBucketException("Unable to post the presigned object.", e);
             }
         }
     }

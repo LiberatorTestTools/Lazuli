@@ -9,7 +9,7 @@
             Base class for adding notifications to AWS
             </summary>
         </member>
-        <member name="M:Liberator.Lazuli.Minio.Client.AwsNotifications.Get(Minio.MinioClient,System.String)">
+        <member name="M:Liberator.Lazuli.Minio.Client.AwsNotifications.GetAwsNotifications(Minio.MinioClient,System.String)">
             <summary>
             Gets notifications from a bucket
             </summary>
@@ -17,7 +17,7 @@
             <param name="bucketName">The name of the bucket.</param>
             <returns>A task object representing the request.</returns>
         </member>
-        <member name="M:Liberator.Lazuli.Minio.Client.AwsNotifications.Set(Minio.MinioClient,System.String)">
+        <member name="M:Liberator.Lazuli.Minio.Client.AwsNotifications.SetAwsNotifications(Minio.MinioClient,System.String)">
             <summary>
             Sets notifications for a bucket
             </summary>
@@ -25,7 +25,7 @@
             <param name="bucketName">The name of the bucket.</param>
             <returns>A task object representing the request.</returns>
         </member>
-        <member name="M:Liberator.Lazuli.Minio.Client.AwsNotifications.RemoveAll(Minio.MinioClient,System.String)">
+        <member name="M:Liberator.Lazuli.Minio.Client.AwsNotifications.RemoveAllAwsNotifications(Minio.MinioClient,System.String)">
             <summary>
             Removes all notifications for a bucket
             </summary>
@@ -97,11 +97,15 @@
             The Minio Client
             </summary>
         </member>
-        <member name="M:Liberator.Lazuli.Minio.Client.Client.Get(System.String)">
+        <member name="M:Liberator.Lazuli.Minio.Client.Client.Get(System.String,System.String,System.String,System.String,System.String)">
             <summary>
             Gets a client to allow contact with the Minio installation
             </summary>
             <param name="endpoint">The endpoint for the minio installation</param>
+            <param name="accessKey">Access Key for authenticated requests (Optional)</param>
+            <param name="secretKey">Secret Key for authenticated requests (Optional)</param>
+            <param name="region">Optional custom region</param>
+            <param name="sessionToken">Optional session token</param>
             <returns>A MinioClient object</returns>
         </member>
         <member name="T:Liberator.Lazuli.Minio.Client.FileObject">

@@ -1,4 +1,5 @@
-﻿using Minio;
+﻿using Liberator.Lazuli.Minio.Exceptions;
+using Minio;
 using Minio.DataModel;
 using Minio.Exceptions;
 using System;
@@ -36,7 +37,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to get the object.", e);
             }
         }
 
@@ -72,7 +73,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to get the partial object.", e);
             }
         }
 
@@ -111,7 +112,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to stream to the named bucket.", e);
             }
         }
 
@@ -130,7 +131,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[StatObject] {0}-{1}  Exception: {2}", bucketName, bucketObject, e);
+                throw new LazuliBucketException("Unable to get statistics for the object.", e);
             }
         }
 
@@ -149,7 +150,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket-Object]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to remove the named object.", e);
             }
         }
 
@@ -165,17 +166,10 @@ namespace Liberator.Lazuli.Minio.Client
             try
             {
                 IObservable<DeleteError> observable = await minio.RemoveObjectAsync(bucketName, objectsList);
-                IDisposable subscription = observable.Subscribe(
-                   deleteError => Console.WriteLine("Object: {0}", deleteError.Key),
-                   ex => Console.WriteLine("OnError: {0}", ex),
-                   () =>
-                   {
-                       Console.WriteLine("Listed all delete errors for remove objects on  " + bucketName + "\n");
-                   });
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket-Object]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to remove one or all of the named objects.", e);
             }
         }
 
@@ -199,7 +193,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to copy the object.", e);
             }
         }
 
@@ -228,7 +222,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to copy the object and metadata.", e);
             }
         }
 
@@ -247,7 +241,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.WriteLine("[Bucket-Object]  Exception: {0}", e);
+                throw new LazuliBucketException("Unable to remove the incomplete object.", e);
             }
         }
 
@@ -267,7 +261,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("Exception ", e.Message);
+                throw new LazuliBucketException("Unable to get the presigned object.", e);
             }
         }
 
@@ -286,7 +280,7 @@ namespace Liberator.Lazuli.Minio.Client
             }
             catch (Exception e)
             {
-                Console.Out.WriteLine("Exception ", e.Message);
+                throw new LazuliBucketException("Unable to put the presigned object.", e);
             }
         }
     }

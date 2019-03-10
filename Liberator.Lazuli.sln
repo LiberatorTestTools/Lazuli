@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Liberator.Lazuli.Minio", "Liberator.Lazuli.Minio\Liberator.Lazuli.Minio.csproj", "{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Liberator.Lazuli.MinioBuckets", "Liberator.Lazuli.Minio\Liberator.Lazuli.MinioBuckets.csproj", "{065D2C97-1C6B-4176-8E6C-19DE41D7C8DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

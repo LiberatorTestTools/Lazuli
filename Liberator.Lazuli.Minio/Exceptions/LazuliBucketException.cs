@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Liberator.Lazuli.Minio.Exceptions
+namespace Liberator.Lazuli.MinioBuckets.Exceptions
 {
     /// <summary>
     /// Exception for the Lazuli library

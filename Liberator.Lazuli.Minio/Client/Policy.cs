@@ -1,28 +1,33 @@
-﻿using Liberator.Lazuli.Minio.Exceptions;
+﻿using Liberator.Lazuli.MinioBuckets.Exceptions;
 using Minio;
 using Minio.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Liberator.Lazuli.Minio.Client
+namespace Liberator.Lazuli.MinioBuckets.Client
 {
     /// <summary>
     /// Base class for bucket policy operations
     /// </summary>
-    public class Policy
+    public static class Policy
     {
         /// <summary>
         /// Gets the policy stored on the server for the bucket
         /// </summary>
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public async static Task Get(MinioClient minio, string bucketName)
+        public static string GetPolicy(this MinioClient minio, string bucketName,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                string policyJson = await minio.GetPolicyAsync(bucketName);
+                Task<string> policyTask = minio.GetPolicyAsync(bucketName, cancellationToken);
+                policyTask.Wait();
+                return policyTask.Result;
             }
             catch (Exception e)
             {
@@ -35,12 +40,16 @@ namespace Liberator.Lazuli.Minio.Client
         /// </summary>
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public async static Task Set(MinioClient minio, string bucketName)
+        public static string SetPolicy(this MinioClient minio, string bucketName,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                String policyJson = await minio.GetPolicyAsync(bucketName);
+                Task<string> policyTask = minio.GetPolicyAsync(bucketName, cancellationToken);
+                policyTask.Wait();
+                return policyTask.Result;
             }
             catch (Exception e)
             {
@@ -55,7 +64,7 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="bucketName">Bucket to retrieve object from</param>
         /// <param name="objectName">Name of object to retrieve</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public async static Task PresignedPost(MinioClient minio, string bucketName, string objectName)
+        public async static Task PresignedPostPolicy(MinioClient minio, string bucketName, string objectName)
         {
             try
             {

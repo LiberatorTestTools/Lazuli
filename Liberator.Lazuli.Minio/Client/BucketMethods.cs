@@ -1,27 +1,36 @@
-﻿using Liberator.Lazuli.Minio.Exceptions;
+﻿using Liberator.Lazuli.MinioBuckets.Exceptions;
 using Minio;
 using Minio.DataModel;
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Liberator.Lazuli.Minio.Client
+namespace Liberator.Lazuli.MinioBuckets.Client
 {
     /// <summary>
     /// Control class for methods pertaining to buckets
     /// </summary>
-    public class Bucket
+    public static class BucketMethods
     {
         /// <summary>
         /// Makes a new bucket on the client.
         /// </summary>
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
-        /// <returns>A task object representing the request.</returns>
-        public async static Task Make(MinioClient minio, string bucketName)
+        /// <param name="region">The region for the client.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+        /// <returns>A task status object.</returns>
+        public static TaskStatus MakeNewBucket(this MinioClient minio, string bucketName,
+                                        [Optional, DefaultParameterValue("us-east-1")] string region,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                await minio.MakeBucketAsync(bucketName);
+                Task task = minio.MakeBucketAsync(bucketName, region, cancellationToken);
+                task.Wait();
+                return task.Status;
             }
             catch (Exception e)
             {
@@ -33,12 +42,16 @@ namespace Liberator.Lazuli.Minio.Client
         /// Lists the buckets on the client.
         /// </summary>
         /// <param name="minio">The client for the connection.</param>
-        /// <returns>A task object representing the request.</returns>
-        public async static Task List(MinioClient minio)
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+        /// <returns>A list of Bucket.</returns>
+        public static List<Bucket> ListBuckets(this MinioClient minio,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                ListAllMyBucketsResult list = await minio.ListBucketsAsync();
+                Task<ListAllMyBucketsResult> listTask = minio.ListBucketsAsync(cancellationToken);
+                listTask.Wait();
+                return listTask.Result.Buckets;
             }
             catch (Exception e)
             {
@@ -52,12 +65,16 @@ namespace Liberator.Lazuli.Minio.Client
         /// </summary>
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
-        /// <returns>A task object representing the request.</returns>
-        public async static Task Exists(MinioClient minio, string bucketName)
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+        /// <returns>True if the bucket exists.</returns>
+        public static bool DoesBucketExist(this MinioClient minio, string bucketName,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                bool found = await minio.BucketExistsAsync(bucketName);
+                Task<bool> foundTask = minio.BucketExistsAsync(bucketName, cancellationToken);
+                foundTask.Wait();
+                return foundTask.Result;
             }
             catch (Exception e)
             {
@@ -70,12 +87,16 @@ namespace Liberator.Lazuli.Minio.Client
         /// </summary>
         /// <param name="minio">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
-        /// <returns>A task object representing the request.</returns>
-        public async static Task Remove(MinioClient minio, string bucketName)
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
+        /// <returns>Represents the current stage in the lifecycle of a Task.</returns>
+        public static TaskStatus RemoveBucket(MinioClient minio, string bucketName,
+                                        CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                await minio.RemoveBucketAsync(bucketName);
+                Task task = minio.RemoveBucketAsync(bucketName, cancellationToken);
+                task.Wait();
+                return task.Status;
             }
             catch (Exception e)
             {
@@ -94,6 +115,7 @@ namespace Liberator.Lazuli.Minio.Client
         {
             try
             {
+                //TODO:Work to clean this up and genericise it
                 IObservable<Item> observable = minio.ListObjectsAsync(bucketName, prefix, recursive);
                 IDisposable subscription = observable.Subscribe(
                     item => Console.WriteLine("Object: {0}", item.Key),
@@ -120,6 +142,7 @@ namespace Liberator.Lazuli.Minio.Client
         {
             try
             {
+                //TODO:Work to clean this up and genericise it
                 IObservable<Upload> observable = minio.ListIncompleteUploads(bucketName, prefix, recursive);
                 IDisposable subscription = observable.Subscribe(
                     item => Console.WriteLine("OnNext: {0}", item.Key),

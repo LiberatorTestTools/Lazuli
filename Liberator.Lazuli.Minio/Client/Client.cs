@@ -1,7 +1,7 @@
 ﻿using Minio;
 using System.Runtime.InteropServices;
 
-namespace Liberator.Lazuli.Minio.Client
+namespace Liberator.Lazuli.MinioBuckets.Client
 {
     /// <summary>
     /// The Client for communication with the bucket

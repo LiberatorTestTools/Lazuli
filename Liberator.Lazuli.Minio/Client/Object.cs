@@ -1,4 +1,4 @@
-﻿using Liberator.Lazuli.Minio.Exceptions;
+﻿using Liberator.Lazuli.MinioBuckets.Exceptions;
 using Minio;
 using Minio.DataModel;
 using Minio.Exceptions;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Liberator.Lazuli.Minio.Client
+namespace Liberator.Lazuli.MinioBuckets.Client
 {
     /// <summary>
     /// Base class for methods pertaining to objects.
@@ -24,7 +24,7 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="objectName">Name of object to retrieve</param>
         /// <param name="fileName">Path to the file.</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task Get(MinioClient minio, string bucketName, string objectName, string fileName)
+        public async static Task GetObject(MinioClient minio, string bucketName, string objectName, string fileName)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="bucketName">Bucket to retrieve object from</param>
         /// <param name="objectName">Name of object to retrieve</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task GetPresigned(MinioClient minio, string bucketName = "my-bucket-name", string objectName = "my-object-name")
+        public async static Task GetPresigned(MinioClient minio, string bucketName, string objectName)
         {
             try
             {

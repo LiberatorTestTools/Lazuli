@@ -1,16 +1,19 @@
-﻿using Liberator.Lazuli.Minio.Exceptions;
+﻿using Liberator.Lazuli.MinioBuckets.Exceptions;
 using Minio;
 using Minio.DataModel;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Liberator.Lazuli.Minio.Client
+namespace Liberator.Lazuli.MinioBuckets.Client
 {
     /// <summary>
     /// Base class for file object methods.
     /// </summary>
-    public class FileObject
+    public static class FileObject
     {
         /// <summary>
         /// Get an object. The object will be streamed to the callback given by the user.
@@ -20,13 +23,18 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="objectName">Name of object to retrieve</param>
         /// <param name="fileName">Path to the file.</param>
         /// <param name="sse">Server-side encryption option.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task DownloadToFile(MinioClient minio, string bucketName, string objectName, string fileName, ServerSideEncryption sse)
+        public static TaskStatus DownloadToFile(this MinioClient minio, string bucketName, string objectName, string fileName,
+                                                    [Optional, DefaultParameterValue(null)] ServerSideEncryption sse,
+                                                    CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
                 File.Delete(fileName);
-                await minio.GetObjectAsync(bucketName, objectName, fileName, sse: sse);
+                Task task = minio.GetObjectAsync(bucketName, objectName, fileName, sse, cancellationToken);
+                task.Wait();
+                return task.Status;
             }
             catch (Exception e)
             {
@@ -41,12 +49,22 @@ namespace Liberator.Lazuli.Minio.Client
         /// <param name="bucketName">Bucket to retrieve object from</param>
         /// <param name="objectName">Name of object to retrieve</param>
         /// <param name="fileName">Path to the file.</param>
+        /// <param name="contentType">The type of content being uploaded.</param>
+        /// <param name="metadata">Metadata for the file.</param>
+        /// <param name="sse">Server-side encryption option.</param>
+        /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>A task object representing the request.</returns>
-        public async static Task UploadFromFile(MinioClient minio, string bucketName, string objectName, string fileName)
+        public static TaskStatus UploadFromFile(MinioClient minio, string bucketName, string objectName, string fileName,
+                                                [Optional, DefaultParameterValue("application/octet-stream")] string contentType,
+                                                [Optional, DefaultParameterValue(null)] Dictionary<string, string> metadata,
+                                                [Optional, DefaultParameterValue(null)] ServerSideEncryption sse,
+                                                CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                await minio.PutObjectAsync(bucketName, objectName, fileName, contentType: "application/octet-stream");
+                Task task = minio.PutObjectAsync(bucketName, objectName, fileName, contentType, metadata, sse, cancellationToken);
+                task.Wait();
+                return task.Status;
             }
             catch (Exception e)
             {

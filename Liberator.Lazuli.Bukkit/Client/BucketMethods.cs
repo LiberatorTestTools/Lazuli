@@ -1,5 +1,4 @@
 ﻿using Liberator.Lazuli.MinioBuckets.Exceptions;
-using Minio;
 using Minio.DataModel;
 using System;
 using System.Collections.Generic;
@@ -17,18 +16,18 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Makes a new bucket on the client.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="region">The region for the client.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>A task status object.</returns>
-        public static TaskStatus MakeNewBucket(this MinioClient minio, string bucketName,
+        public static TaskStatus MakeNewBucket(this LazuliClient client, string bucketName,
                                         [Optional, DefaultParameterValue("us-east-1")] string region,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task task = minio.MakeBucketAsync(bucketName, region, cancellationToken);
+                Task task = client.minioClient.MakeBucketAsync(bucketName, region, cancellationToken);
                 task.Wait();
                 return task.Status;
             }
@@ -41,15 +40,15 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Lists the buckets on the client.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>A list of Bucket.</returns>
-        public static List<Bucket> ListBuckets(this MinioClient minio,
+        public static List<Bucket> ListBuckets(this LazuliClient client,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task<ListAllMyBucketsResult> listTask = minio.ListBucketsAsync(cancellationToken);
+                Task<ListAllMyBucketsResult> listTask = client.minioClient.ListBucketsAsync(cancellationToken);
                 listTask.Wait();
                 return listTask.Result.Buckets;
             }
@@ -63,16 +62,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Checks to see if buckets exist.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>True if the bucket exists.</returns>
-        public static bool DoesBucketExist(this MinioClient minio, string bucketName,
+        public static bool DoesBucketExist(this LazuliClient client, string bucketName,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task<bool> foundTask = minio.BucketExistsAsync(bucketName, cancellationToken);
+                Task<bool> foundTask = client.minioClient.BucketExistsAsync(bucketName, cancellationToken);
                 foundTask.Wait();
                 return foundTask.Result;
             }
@@ -85,16 +84,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Removes a bucket from the client.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>Represents the current stage in the lifecycle of a Task.</returns>
-        public static TaskStatus RemoveBucket(MinioClient minio, string bucketName,
+        public static TaskStatus RemoveBucket(this LazuliClient client, string bucketName,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task task = minio.RemoveBucketAsync(bucketName, cancellationToken);
+                Task task = client.minioClient.RemoveBucketAsync(bucketName, cancellationToken);
                 task.Wait();
                 return task.Status;
             }
@@ -108,16 +107,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Lists the objects within a bucket.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="prefix">Filters all objects not beginning with a given prefix.</param>
         /// <param name="recursive">Set to false to emulate a directory.</param>
-        public static void ListObjects(MinioClient minio, string bucketName, string prefix, bool recursive)
+        public static void ListObjects(this LazuliClient client, string bucketName, string prefix, bool recursive)
         {
             try
             {
                 //TODO:Work to clean this up and genericise it
-                IObservable<Item> observable = minio.ListObjectsAsync(bucketName, prefix, recursive);
+                IObservable<Item> observable = client.minioClient.ListObjectsAsync(bucketName, prefix, recursive);
                 IDisposable subscription = observable.Subscribe(
                     item => Console.WriteLine("Object: {0}", item.Key),
                     ex => Console.WriteLine("OnError: {0}", ex),
@@ -136,16 +135,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Lists all incolmplete uploads for the bucket
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="prefix">Prefix to list all incomplete uploads.</param>
         /// <param name="recursive">Option to list incomplete uploads recursively.</param>
-        public static void ListIncompleteUploads(MinioClient minio, string bucketName, string prefix, bool recursive = true)
+        public static void ListIncompleteUploads(this LazuliClient client, string bucketName, string prefix, bool recursive = true)
         {
             try
             {
                 //TODO:Work to clean this up and genericise it
-                IObservable<Upload> observable = minio.ListIncompleteUploads(bucketName, prefix, recursive);
+                IObservable<Upload> observable = client.minioClient.ListIncompleteUploads(bucketName, prefix, recursive);
                 IDisposable subscription = observable.Subscribe(
                     item => Console.WriteLine("OnNext: {0}", item.Key),
                     ex => Console.WriteLine("OnError: {0}", ex.Message),

@@ -16,16 +16,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Gets the policy stored on the server for the bucket
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public static string GetPolicy(this MinioClient minio, string bucketName,
+        public static string GetPolicy(this LazuliClient client, string bucketName,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task<string> policyTask = minio.GetPolicyAsync(bucketName, cancellationToken);
+                Task<string> policyTask = client.minioClient.GetPolicyAsync(bucketName, cancellationToken);
                 policyTask.Wait();
                 return policyTask.Result;
             }
@@ -38,16 +38,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Sets the policy stored on the server for the bucket
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public static string SetPolicy(this MinioClient minio, string bucketName,
+        public static string SetPolicy(this LazuliClient client, string bucketName,
                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task<string> policyTask = minio.GetPolicyAsync(bucketName, cancellationToken);
+                Task<string> policyTask = client.minioClient.GetPolicyAsync(bucketName, cancellationToken);
                 policyTask.Wait();
                 return policyTask.Result;
             }
@@ -60,11 +60,11 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Posts a presigned object to the client.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">Bucket to retrieve object from</param>
         /// <param name="objectName">Name of object to retrieve</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public static Tuple<string, Dictionary<string, string>> PresignedPostPolicy(this MinioClient minio, string bucketName, string objectName)
+        public static Tuple<string, Dictionary<string, string>> PresignedPostPolicy(this LazuliClient client, string bucketName, string objectName)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace Liberator.Lazuli.MinioBuckets.Client
                 form.SetKey(objectName);
                 form.SetBucket(bucketName);
 
-                Task<Tuple<string, Dictionary<string, string>>> task = minio.PresignedPostPolicyAsync(form);
+                Task<Tuple<string, Dictionary<string, string>>> task = client.minioClient.PresignedPostPolicyAsync(form);
                 task.Wait();
                 return task.Result;
             }

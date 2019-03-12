@@ -16,16 +16,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Gets notifications from a bucket
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>A BucketNotification object</returns>
-        public static BucketNotification GetAwsNotifications(this MinioClient minio, string bucketName,
+        public static BucketNotification GetAwsNotifications(this LazuliClient client, string bucketName,
                                                                 CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task<BucketNotification> notificationTask = minio.GetBucketNotificationsAsync(bucketName, cancellationToken);
+                Task<BucketNotification> notificationTask = client.minioClient.GetBucketNotificationsAsync(bucketName, cancellationToken);
                 notificationTask.Wait();
                 return notificationTask.Result;
             }
@@ -38,12 +38,12 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Sets notifications for a bucket
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="configurations">Notification configuration list.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>Represents the current stage in the lifecycle of a Task.</returns>
-        public static TaskStatus SetAwsNotifications(this MinioClient minio, string bucketName,
+        public static TaskStatus SetAwsNotifications(this LazuliClient client, string bucketName,
                                                 IEnumerable<NotificationConfiguration> configurations,
                                                 CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -67,7 +67,7 @@ namespace Liberator.Lazuli.MinioBuckets.Client
                     } 
                 }
 
-                Task task = minio.SetBucketNotificationsAsync(bucketName, notification, cancellationToken);
+                Task task = client.minioClient.SetBucketNotificationsAsync(bucketName, notification, cancellationToken);
                 task.Wait();
                 return task.Status;
             }
@@ -80,16 +80,16 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <summary>
         /// Removes all notifications for a bucket.
         /// </summary>
-        /// <param name="minio">The client for the connection.</param>
+        /// <param name="client">The client for the connection.</param>
         /// <param name="bucketName">The name of the bucket.</param>
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         /// <returns>Represents the current stage in the lifecycle of a Task.</returns>
-        public static TaskStatus RemoveAllAwsNotifications(this MinioClient minio, string bucketName,
+        public static TaskStatus RemoveAllAwsNotifications(this LazuliClient client, string bucketName,
                                                         CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                Task task = minio.RemoveAllBucketNotificationsAsync(bucketName, cancellationToken);
+                Task task = client.minioClient.RemoveAllBucketNotificationsAsync(bucketName, cancellationToken);
                 task.Wait();
                 return task.Status;
             }

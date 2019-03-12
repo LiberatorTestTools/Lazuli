@@ -56,7 +56,7 @@ namespace Liberator.Lazuli.MinioBuckets.Client
                 throw new LazuliBucketException("Unable to set the policy for the bucket.", e);
             }
         }
-
+        
         /// <summary>
         /// Posts a presigned object to the client.
         /// </summary>
@@ -64,7 +64,7 @@ namespace Liberator.Lazuli.MinioBuckets.Client
         /// <param name="bucketName">Bucket to retrieve object from</param>
         /// <param name="objectName">Name of object to retrieve</param>
         /// <returns>An asynchronous task representing the operation</returns>
-        public async static Task PresignedPostPolicy(MinioClient minio, string bucketName, string objectName)
+        public static Tuple<string, Dictionary<string, string>> PresignedPostPolicy(this MinioClient minio, string bucketName, string objectName)
         {
             try
             {
@@ -73,14 +73,10 @@ namespace Liberator.Lazuli.MinioBuckets.Client
                 form.SetExpires(expiration.AddDays(10));
                 form.SetKey(objectName);
                 form.SetBucket(bucketName);
-                Tuple<string, Dictionary<string, string>> tuple = await minio.PresignedPostPolicyAsync(form);
-                string curlCommand = "curl -X POST ";
-                foreach (KeyValuePair<string, string> pair in tuple.Item2)
-                {
-                    curlCommand = curlCommand + String.Format(" -F {0}={1}", pair.Key, pair.Value);
-                }
 
-                curlCommand = curlCommand + " -F file=@/etc/bashrc " + tuple.Item1; // https://s3.amazonaws.com/my-bucketname";
+                Task<Tuple<string, Dictionary<string, string>>> task = minio.PresignedPostPolicyAsync(form);
+                task.Wait();
+                return task.Result;
             }
             catch (Exception e)
             {

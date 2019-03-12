@@ -104,6 +104,7 @@ namespace Liberator.Lazuli.MinioBuckets.Client
             }
         }
 
+        //TODO:Create delegate system to deal with subscriptions
         /// <summary>
         /// Lists the objects within a bucket.
         /// </summary>
@@ -131,6 +132,7 @@ namespace Liberator.Lazuli.MinioBuckets.Client
 
         }
 
+        //TODO:Create delegate system to deal with subscriptions
         /// <summary>
         /// Lists all incolmplete uploads for the bucket
         /// </summary>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Liberator.Lazuli.Bukkit</name>
+        <name>Liberator.Lazuli.Minio</name>
     </assembly>
     <members>
         <member name="T:Liberator.Lazuli.Minio.Client.AwsNotifications">
